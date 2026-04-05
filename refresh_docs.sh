@@ -106,6 +106,10 @@ git commit -m "docs: 手动全量刷新系统设计文档 [bot]
 
 # 新增：直接在 refresh_docs.sh 内部执行 push
 echo "[refresh_docs] 🚀 正在推送到远程仓库..."
-git push
+# 使用 || true 防止 push 失败导致整个脚本 exit 1 报错
+git push || {
+    echo "[refresh_docs] ⚠️ 推送失败，可能是远程有新提交冲突，请手动处理或重试流水线。"
+    exit 1
+}
 
 echo "[refresh_docs] 🎉 完成！目标仓库: $TARGET_REPO"
