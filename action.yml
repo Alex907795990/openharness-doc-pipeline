@@ -21,6 +21,7 @@ runs:
     - shell: bash
       env:
         OPENHARNESS_API_KEY: ${{ inputs.api_key }}
+        OPENAI_API_KEY: ${{ inputs.api_key }}
         OPENHARNESS_BASE_URL: ${{ inputs.base_url }}
         PYTHONIOENCODING: "utf-8"
         PYTHONUTF8: "1"

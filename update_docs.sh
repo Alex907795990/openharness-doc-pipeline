@@ -34,6 +34,7 @@ fi
 
 # 确保使用 OpenAI 兼容端点
 export OPENHARNESS_BASE_URL="https://api.jiekou.ai/openai/v1"
+export OPENAI_API_KEY="${OPENHARNESS_API_KEY:-$OPENAI_API_KEY}"
 export PYTHONIOENCODING="utf-8"
 export PYTHONUTF8=1
 
@@ -76,7 +77,7 @@ PROMPT="${PROMPT//\{\{DIFF_INFO\}\}/$DIFF_INFO}"
 # ---------------------------------------------------------------------------
 echo "[update_docs] 调用 OpenHarness 更新文档..."
 cd "$TARGET_REPO"
-"$OH_CMD" -m zai-org/glm-5 --permission-mode full_auto -p "$PROMPT"
+"$OH_CMD" --api-format openai -m zai-org/glm-5 --permission-mode full_auto -p "$PROMPT"
 
 # ---------------------------------------------------------------------------
 # 5. Git 提交
