@@ -2,24 +2,42 @@
 set -e
 
 # ---------------------------------------------------------------------------
-# 配置
+# 需求文档 → 系统设计 流水线
+# 用法: ./update_docs.sh <目标文档仓库路径>
+# 示例: ./update_docs.sh ../doc-test
 # ---------------------------------------------------------------------------
+
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 OH_CMD="$SCRIPT_DIR/OpenHarness/.venv/Scripts/oh.exe"
 
-# 确保使用 OpenAI 兼容端点，不受 Claude Code 环境变量干扰
+# 默认目标仓库
+DEFAULT_TARGET="../doc-test"
+TARGET_REPO="${1:-$DEFAULT_TARGET}"
+
+# 转换为绝对路径
+TARGET_REPO="$(cd "$TARGET_REPO" && pwd)"
+
+if [ ! -d "$TARGET_REPO/stories" ]; then
+    echo "[update_docs] 错误: $TARGET_REPO 不是有效的文档仓库（缺少 stories 目录）"
+    exit 1
+fi
+
+# 确保使用 OpenAI 兼容端点
 export OPENHARNESS_BASE_URL="https://api.jiekou.ai/openai/v1"
 
 # ---------------------------------------------------------------------------
-# 1. 差异检测：找出本次提交中 stories/ 目录变更的 .md 文件
+# 1. 检测目标仓库中 stories/ 的变更
 # ---------------------------------------------------------------------------
+cd "$TARGET_REPO"
 CHANGED_STORIES=$(git diff --name-only HEAD~1 HEAD 2>/dev/null | grep "^stories/.*\.md$" || true)
 
 if [ -z "$CHANGED_STORIES" ]; then
     echo "[update_docs] stories/ 目录无变更，跳过文档更新。"
+    echo "[update_docs] 如需强制重建，请手动运行: $OH_CMD -p '...' --cwd $TARGET_REPO"
     exit 0
 fi
 
+echo "[update_docs] 目标仓库: $TARGET_REPO"
 echo "[update_docs] 检测到以下需求文件变更："
 echo "$CHANGED_STORIES"
 
@@ -42,7 +60,7 @@ PROMPT="你需要对系统设计文档做【增量更新】，严格按以下步
 # 3. 调用 OpenHarness 执行文档更新
 # ---------------------------------------------------------------------------
 echo "[update_docs] 调用 OpenHarness 更新文档..."
-cd "$SCRIPT_DIR"
+cd "$TARGET_REPO"
 "$OH_CMD" --permission-mode full_auto -p "$PROMPT"
 
 # ---------------------------------------------------------------------------
@@ -62,6 +80,4 @@ git commit -m "docs: 自动更新系统设计文档 [bot]
 
 根据 stories 变更自动生成，相关文件：$FILES_LIST"
 
-git push 2>/dev/null || echo "[update_docs] 远程推送跳过（无远程仓库或推送失败）。"
-
-echo "[update_docs] 完成。"
+echo "[update_docs] 完成。目标仓库: $TARGET_REPO"

@@ -1,9 +1,13 @@
-# 角色定义
-你是一个资深的系统架构师。你的核心任务是：当有新的业务需求（Story）加入时，阅读需求并更新 `docs/system_design.md`。
+# 流水线仓库
 
-# 维护系统文档的规则：
-1. 必须保持结构化：包含【核心数据模型】、【API 接口定义】、【关键业务逻辑】三个固定章节。
-2. 不要删除旧的有效逻辑，而是将新需求融入现有架构中。
-3. 遇到需求冲突时，在文档中添加【待确认风险】标记。
-4. 使用你的文件读写工具（File I/O tools）直接修改 `docs/system_design.md`。
-5. 每次修改后，在 `MEMORY.md` 中简要记录本次架构变更的核心决策。
+## 用途
+这是「需求文档 → 系统设计」自动化流水线的核心仓库。
+
+## 组成
+- `OpenHarness/` - AI Agent 框架（HKUDS 开源项目）
+- `pipeline/` - 流水线相关文档和脚本
+- `.openharness/` - OpenHarness 配置
+- `.claude/` - Claude Code 配置
+
+## 使用方式
+流水线会监控目标文档仓库的 stories 变更，自动更新 docs/system_design.md。

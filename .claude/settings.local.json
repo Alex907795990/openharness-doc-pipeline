@@ -22,7 +22,13 @@
       "Bash(chmod +x D:/CC/Harness/update_docs.sh)",
       "Bash(bash update_docs.sh)",
       "Bash(git -C D:/CC/Harness log --oneline)",
-      "Bash(./OpenHarness/.venv/Scripts/oh.exe --permission-mode full_auto -p '请完整重建 docs/system_design.md，步骤如下：:*)"
+      "Bash(./OpenHarness/.venv/Scripts/oh.exe --permission-mode full_auto -p '请完整重建 docs/system_design.md，步骤如下：:*)",
+      "Skill(update-config)",
+      "Bash(cp -r /d/CC/Harness/stories /d/CC/doc-test/)",
+      "Bash(cp -r /d/CC/Harness/docs /d/CC/doc-test/)",
+      "Bash(rm:*)",
+      "Bash(git add:*)",
+      "Bash(git commit -m 'refactor: 分离流水线仓库与文档仓库:*)"
     ]
   }
 }
