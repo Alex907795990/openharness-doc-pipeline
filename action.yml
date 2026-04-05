@@ -27,13 +27,17 @@ runs:
         PYTHONUTF8: "1"
       run: |
         echo "🚀 初始化 OpenHarness 引擎..."
-        # 这里改为拉取你的 fork 仓库，因为它包含了修复
-        git clone https://github.com/Alex907795990/OpenHarness.git /tmp/harness/OpenHarness
-        cd /tmp/harness/OpenHarness && uv sync
-        export PATH="/tmp/harness/OpenHarness/.venv/bin:$PATH"
+        git clone https://github.com/HKUDS/OpenHarness.git /tmp/harness/OpenHarness
         
         echo "📥 拉取流水线脚本..."
         git clone https://github.com/Alex907795990/openharness-doc-pipeline.git /tmp/harness/pipeline-scripts
+        
+        echo "🔧 应用引擎热修复 (Hotfix)..."
+        cp /tmp/harness/pipeline-scripts/patches/glob_tool.py /tmp/harness/OpenHarness/src/openharness/tools/glob_tool.py
+        
+        cd /tmp/harness/OpenHarness && uv sync
+        export PATH="/tmp/harness/OpenHarness/.venv/bin:$PATH"
+        
         cp -r /tmp/harness/pipeline-scripts/* /tmp/harness/
         chmod +x /tmp/harness/*.sh
         
