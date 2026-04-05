@@ -72,6 +72,10 @@ echo "[refresh_docs] 调用 OpenHarness 全量更新文档..."
 git config user.name  "doc-bot"
 git config user.email "doc-bot@update-docs.local"
 
+# 确保目录存在，避免 git add 报错
+mkdir -p oh-gen-doc
+touch MEMORY.md
+
 # 由于现在允许生成多个 yaml 文件，这里将 oh-gen-doc 整个目录和 MEMORY.md 都加入
 git add oh-gen-doc/ MEMORY.md 2>/dev/null || true
 

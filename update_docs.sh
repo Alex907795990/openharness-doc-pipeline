@@ -85,6 +85,10 @@ cd "$TARGET_REPO"
 git config user.name  "doc-bot"
 git config user.email "doc-bot@update-docs.local"
 
+# 确保目录存在，避免 git add 报错
+mkdir -p oh-gen-doc
+touch MEMORY.md
+
 # 支持新版提示词可能生成的多个 yaml 文件
 git add oh-gen-doc/ MEMORY.md 2>/dev/null || true
 
