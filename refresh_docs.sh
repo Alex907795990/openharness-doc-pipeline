@@ -63,12 +63,24 @@ PROMPT="${PROMPT//\{\{DIFF_INFO\}\}/$DIFF_INFO}"
 # ---------------------------------------------------------------------------
 # 4. 调用 OpenHarness 执行文档更新
 # ---------------------------------------------------------------------------
-echo "[refresh_docs] 调用 OpenHarness 全量更新文档..."
-"$OH_CMD" --api-format openai -m zai-org/glm-5 --permission-mode full_auto -p "$PROMPT"
+echo "[refresh_docs] ========================================================"
+echo "[refresh_docs] 开始调用 OpenHarness 进行全量刷新..."
+echo "[refresh_docs] 模型: zai-org/glm-5, 接口: OpenAI 兼容格式"
+echo "[refresh_docs] ========================================================"
+
+# 加入 --verbose 参数，让 OpenHarness 打印出详细的工具调用日志和思考过程
+"$OH_CMD" --verbose --api-format openai -m zai-org/glm-5 --permission-mode full_auto -p "$PROMPT"
+
+echo "[refresh_docs] ========================================================"
+echo "[refresh_docs] OpenHarness 执行完毕。"
+echo "[refresh_docs] 当前 oh-gen-doc/ 目录下的文件列表："
+ls -la oh-gen-doc/ || echo "[refresh_docs] 警告: oh-gen-doc/ 目录不存在！"
+echo "[refresh_docs] ========================================================"
 
 # ---------------------------------------------------------------------------
 # 5. Git 提交
 # ---------------------------------------------------------------------------
+echo "[refresh_docs] 准备检查 Git 状态并提交..."
 git config user.name  "doc-bot"
 git config user.email "doc-bot@update-docs.local"
 
@@ -79,13 +91,17 @@ touch MEMORY.md
 # 由于现在允许生成多个 yaml 文件，这里将 oh-gen-doc 整个目录和 MEMORY.md 都加入
 git add oh-gen-doc/ MEMORY.md 2>/dev/null || true
 
+echo "[refresh_docs] Git 暂存区状态："
+git status --short
+
 if git diff --cached --quiet 2>/dev/null; then
-    echo "[refresh_docs] 文档无变化，无需提交。"
+    echo "[refresh_docs] ❌ 暂存区无任何变化，大模型可能没有实际写入文件，无需提交。"
     exit 0
 fi
 
+echo "[refresh_docs] ✅ 检测到文件变化，正在执行 git commit..."
 git commit -m "docs: 手动全量刷新系统设计文档 [bot]
 
 基于所有 oh-story 重新生成/更新。"
 
-echo "[refresh_docs] 完成。目标仓库: $TARGET_REPO"
+echo "[refresh_docs] 🎉 完成！目标仓库: $TARGET_REPO"
