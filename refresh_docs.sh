@@ -104,4 +104,8 @@ git commit -m "docs: 手动全量刷新系统设计文档 [bot]
 
 基于所有 oh-story 重新生成/更新。"
 
+# 新增：直接在 refresh_docs.sh 内部执行 push
+echo "[refresh_docs] 🚀 正在推送到远程仓库..."
+git push
+
 echo "[refresh_docs] 🎉 完成！目标仓库: $TARGET_REPO"

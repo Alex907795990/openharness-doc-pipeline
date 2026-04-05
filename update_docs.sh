@@ -117,4 +117,8 @@ git commit -m "docs: 自动更新系统设计文档 [bot]
 
 根据 oh-story 变更自动生成，变更文件：$(echo "$CHANGED_STORIES" | tr '\n' ' ')"
 
+# 新增：直接在 update_docs.sh 内部执行 push
+echo "[update_docs] 🚀 正在推送到远程仓库..."
+git push
+
 echo "[update_docs] 🎉 完成！目标仓库: $TARGET_REPO"
