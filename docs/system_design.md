@@ -1,65 +1,57 @@
-# 系统设计文档
+# 系统设计
 
 ## 核心数据模型
+### 用户
+- 用户数据库存储以下字段：
+  - 手机号 (唯一)
+  - 邮箱 (唯一)
+  - 密码（使用 bcrypt 加密存储）
+  - 历史成绩
 
-```yaml
-TypingTest:
-  - id: integer (primary key)
-  - user_id: integer (foreign key to User)
-  - language: enum (values: 'Chinese', 'English')
-  - wpm: float
-  - accuracy: float
-  - created_at: timestamp
+### 成绩
+- 成绩记录包含以下字段：
+  - 用户 ID
+  - 打字段落
+  - WPM（每分钟字数）
+  - 准确率
+  - 测试日期
 
-Leaderboard:
-  - id: integer (primary key)
-  - user_id: integer (foreign key to User)
-  - language: enum (values: 'Chinese', 'English')
-  - best_wpm: float
-```
-
-```yaml
-User:
-  - id: integer (primary key)
-  - phone_number: string (unique)
-  - password_hash: string
-```
-
-```yaml
-VisualEffects:
-  - style_id: integer (primary key)
-  - name: string (e.g., 'Cyberpunk')
-  - typing_animation: string (e.g., 'impact')
-  - success_feedback: string (e.g., 'success sound')
-  - failure_feedback: string (e.g., 'error sound')
-```
+### 排行榜
+- 全站排行榜按最高 WPM 排序，每页显示前 100 名。
 
 ## API 接口定义
+### 用户相关接口
+- 注册：`POST /api/v1/users/register`
+- 登录：`POST /api/v1/users/login`
+- 刷新 Token：`POST /api/v1/users/refresh`
+- 用户信息查询：`GET /api/v1/users/me` （需认证）
 
-### 获取网页视觉效果
-**接口地址**: GET `/api/v1/visual_effects`
+### 打字测试相关接口
+- 获取测试段落：`GET /api/v1/test/paragraph`
+- 提交成绩：`POST /api/v1/test/submit`
 
-**响应参数**:
-```json
-[
-  {
-    "style_id": "integer",
-    "name": "string",
-    "typing_animation": "string",
-    "success_feedback": "string",
-    "failure_feedback": "string"
-  }
-]
-```
-
----
+### 排行榜相关接口
+- 获取排行榜：`GET /api/v1/ranking` （支持按语言筛选：中文/英文）
 
 ## 关键业务逻辑
+### 注册与登录
+1. 用户通过手机号+密码进行注册，需验证手机号唯一性。
+2. bcrypt 加密存储密码，禁止明文存储。
+3. 登录成功后返回 JWT Token。
+4. Token 设置有效期为 2 小时，刷新 Token 有效期为 7 天。
 
-1. **网页主题可配置**：
-    - 用户可以通过选择视觉效果，定义网页的主题风格。
-    - 默认支持的样式包括赛博朋克风格。
+### 打字测试逻辑
+1. 测试开始时随机展示一段文本（支持中文与英文）。
+2. 用户输入的字符实时高亮正确与错误。
+3. 测试从用户首次按键开始计时。
+4. 测试完成后计算 WPM 和准确率，并存储成绩。
 
-2. **视觉效果动态更新**：
-    - 当用户在打字时触发动画。
-    - 成功或失败时根据配置提供反馈声音或提示。
+### 成绩记录与排行榜
+1. 每名登录用户的测试成绩自动保存。
+2. 用户历史成绩支持按日期或 WPM 排序。
+3. 排行榜支持筛选语言，每页显示前 100 名。
+4. 游客模式完成测试时不保存成绩。
+
+## 待确认风险
+- 全站排行榜按语言筛选功能的精确性。
+- 游客模式设计可能增加成绩统计复杂度。
