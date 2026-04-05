@@ -21,7 +21,8 @@
       "Bash(ls D:/CC/Harness/OpenHarness/.venv/bin/oh*)",
       "Bash(chmod +x D:/CC/Harness/update_docs.sh)",
       "Bash(bash update_docs.sh)",
-      "Bash(git -C D:/CC/Harness log --oneline)"
+      "Bash(git -C D:/CC/Harness log --oneline)",
+      "Bash(./OpenHarness/.venv/Scripts/oh.exe --permission-mode full_auto -p '请完整重建 docs/system_design.md，步骤如下：:*)"
     ]
   }
 }
