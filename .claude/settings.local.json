@@ -1,0 +1,27 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(uv --version)",
+      "Bash(command -v oh)",
+      "Bash(pip install:*)",
+      "Bash(python -m uv --version)",
+      "Bash(git clone:*)",
+      "Bash(uv sync:*)",
+      "Bash(uv run:*)",
+      "Bash(curl -s -X POST https://api.jiekou.ai/openai/v1/chat/completions -H 'Authorization: Bearer sk_dU3orlEH6lKLLJ48adADWkWwDLTtV2O6VMXyd-U60ZM' -H 'Content-Type: application/json' -d '{\"model\":\"gpt-4o\",\"messages\":[{\"role\":\"user\",\"content\":\"hi\"}],\"max_tokens\":10}')",
+      "Bash(curl -s -X POST https://api.jiekou.ai/openai/v1/chat/completions -H 'Authorization: Bearer sk_dU3orlEH6lKLLJ48adADWkWwDLTtV2O6VMXyd-U60ZM' -H 'Content-Type: application/json' -d '{\"model\":\"gpt-4o\",\"messages\":[{\"role\":\"user\",\"content\":\"hi\"}],\"max_tokens\":10,\"stream\":true}')",
+      "Bash(curl -s -X POST https://api.jiekou.ai/openai/v1/chat/completions -H 'Authorization: Bearer sk_dU3orlEH6lKLLJ48adADWkWwDLTtV2O6VMXyd-U60ZM' -H 'Content-Type: application/json' -d '{\"model\":\"gpt-4o\",\"messages\":[{\"role\":\"system\",\"content\":\"test\"},{\"role\":\"user\",\"content\":\"hi\"}],\"max_tokens\":10,\"stream\":true,\"stream_options\":{\"include_usage\":true}}')",
+      "Bash(curl -s -X POST https://api.jiekou.ai/anthropic/v1/messages -H 'x-api-key: sk_dU3orlEH6lKLLJ48adADWkWwDLTtV2O6VMXyd-U60ZM' -H 'anthropic-version: 2023-06-01' -H 'Content-Type: application/json' -d '{\"model\":\"claude-opus-4-5\",\"messages\":[{\"role\":\"user\",\"content\":\"hi\"}],\"max_tokens\":10}')",
+      "Bash(curl -s -X POST https://api.jiekou.ai/anthropic/v1/messages -H 'x-api-key: sk_dU3orlEH6lKLLJ48adADWkWwDLTtV2O6VMXyd-U60ZM' -H 'anthropic-version: 2023-06-01' -H 'Content-Type: application/json' -d '{\"model\":\"claude-3-5-sonnet-20241022\",\"messages\":[{\"role\":\"user\",\"content\":\"hi\"}],\"max_tokens\":10}')",
+      "Bash(curl -s https://api.jiekou.ai/openai/v1/models -H 'Authorization: Bearer sk_dU3orlEH6lKLLJ48adADWkWwDLTtV2O6VMXyd-U60ZM')",
+      "Bash(python -c \"import sys,json; data=json.load\\(sys.stdin\\); [print\\(m['id']\\) for m in data.get\\('data',[]\\)]\")",
+      "Bash(OPENHARNESS_BASE_URL=https://api.jiekou.ai/openai/v1 uv run oh -p \"你好，请只回复一个字\")",
+      "Bash(OPENHARNESS_BASE_URL=https://api.jiekou.ai/openai/v1 uv run oh -p \"reply with: ok\")",
+      "Bash(ls D:/CC/Harness/OpenHarness/.venv/Scripts/oh*)",
+      "Bash(ls D:/CC/Harness/OpenHarness/.venv/bin/oh*)",
+      "Bash(chmod +x D:/CC/Harness/update_docs.sh)",
+      "Bash(bash update_docs.sh)",
+      "Bash(git -C D:/CC/Harness log --oneline)"
+    ]
+  }
+}
