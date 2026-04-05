@@ -3,12 +3,12 @@ set -e
 
 # ---------------------------------------------------------------------------
 # 需求文档 → 系统设计 流水线
-# 用法: ./update_docs.sh <目标文档仓库路径>
-# 示例: ./update_docs.sh ../doc-test
+# 用法: ./update_docs.sh [目标文档仓库路径]
 # ---------------------------------------------------------------------------
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 OH_CMD="$SCRIPT_DIR/OpenHarness/.venv/Scripts/oh.exe"
+PROMPT_FILE="$SCRIPT_DIR/pipeline/prompts/update_system_design.md"
 
 # 默认目标仓库
 DEFAULT_TARGET="../doc-test"
@@ -33,7 +33,6 @@ CHANGED_STORIES=$(git diff --name-only HEAD~1 HEAD 2>/dev/null | grep "^stories/
 
 if [ -z "$CHANGED_STORIES" ]; then
     echo "[update_docs] stories/ 目录无变更，跳过文档更新。"
-    echo "[update_docs] 如需强制重建，请手动运行: $OH_CMD -p '...' --cwd $TARGET_REPO"
     exit 0
 fi
 
@@ -42,19 +41,11 @@ echo "[update_docs] 检测到以下需求文件变更："
 echo "$CHANGED_STORIES"
 
 # ---------------------------------------------------------------------------
-# 2. 构建传给 oh 的指令
+# 2. 读取提示词模板并替换变量
 # ---------------------------------------------------------------------------
 FILES_LIST=$(echo "$CHANGED_STORIES" | tr '\n' ' ')
-
-PROMPT="你需要对系统设计文档做【增量更新】，严格按以下步骤执行：
-
-第一步：用 Read 工具读取 docs/system_design.md 的完整内容（如果文件存在）。
-第二步：用 Read 工具读取本次新增/变更的需求文件：$FILES_LIST
-第三步：将新需求合并进现有文档——只增加或修改相关内容，绝对不能删除或覆盖已有的数据模型、接口定义和业务逻辑。
-第四步：用 Write 或 Edit 工具将合并后的完整内容写回 docs/system_design.md。文档必须包含【核心数据模型】、【API 接口定义】、【关键业务逻辑】三个章节，且保留所有历史内容。
-第五步：用 Edit 工具在 MEMORY.md 末尾追加本次变更的一两句摘要。
-
-关键约束：docs/system_design.md 最终内容必须同时包含历史需求和本次新需求，不允许只保留新内容。"
+PROMPT_TEMPLATE=$(cat "$PROMPT_FILE")
+PROMPT="${PROMPT_TEMPLATE//\{\{CHANGED_FILES\}\}/$FILES_LIST}"
 
 # ---------------------------------------------------------------------------
 # 3. 调用 OpenHarness 执行文档更新
