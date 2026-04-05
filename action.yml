@@ -27,7 +27,8 @@ runs:
         PYTHONUTF8: "1"
       run: |
         echo "🚀 初始化 OpenHarness 引擎..."
-        git clone https://github.com/HKUDS/OpenHarness.git /tmp/harness/OpenHarness
+        # 这里改为拉取你的 fork 仓库，因为它包含了修复
+        git clone https://github.com/Alex907795990/OpenHarness.git /tmp/harness/OpenHarness
         cd /tmp/harness/OpenHarness && uv sync
         export PATH="/tmp/harness/OpenHarness/.venv/bin:$PATH"
         
