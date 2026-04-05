@@ -28,7 +28,8 @@
       "Bash(cp -r /d/CC/Harness/docs /d/CC/doc-test/)",
       "Bash(rm:*)",
       "Bash(git add:*)",
-      "Bash(git commit -m 'refactor: 分离流水线仓库与文档仓库:*)"
+      "Bash(git commit -m 'refactor: 分离流水线仓库与文档仓库:*)",
+      "Bash(git commit -m 'refactor: 提示词与脚本分离:*)"
     ]
   }
 }
