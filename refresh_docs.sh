@@ -17,8 +17,8 @@ TARGET_REPO="${1:-$DEFAULT_TARGET}"
 # 转换为绝对路径
 TARGET_REPO="$(cd "$TARGET_REPO" && pwd)"
 
-if [ ! -d "$TARGET_REPO/stories" ]; then
-    echo "[refresh_docs] 错误: $TARGET_REPO 不是有效的文档仓库（缺少 stories 目录）"
+if [ ! -d "$TARGET_REPO/oh-story" ]; then
+    echo "[refresh_docs] 错误: $TARGET_REPO 不是有效的文档仓库（缺少 oh-story 目录）"
     exit 1
 fi
 
@@ -34,7 +34,7 @@ echo "[refresh_docs] 正在执行全量手动刷新..."
 # 1. 收集全量 story 文件列表
 # ---------------------------------------------------------------------------
 cd "$TARGET_REPO"
-ALL_STORIES=$(find stories -name "*.md" -type f 2>/dev/null | sort | tr '\n' ' ')
+ALL_STORIES=$(find oh-story -name "*.md" -type f 2>/dev/null | sort | tr '\n' ' ')
 
 # ---------------------------------------------------------------------------
 # 2. 构造全量刷新的伪 Diff 信息
@@ -61,8 +61,8 @@ echo "[refresh_docs] 调用 OpenHarness 全量更新文档..."
 git config user.name  "doc-bot"
 git config user.email "doc-bot@update-docs.local"
 
-# 由于现在允许生成多个 yaml 文件，这里将 docs 整个目录和 MEMORY.md 都加入
-git add docs/ MEMORY.md 2>/dev/null || true
+# 由于现在允许生成多个 yaml 文件，这里将 oh-gen-doc 整个目录和 MEMORY.md 都加入
+git add oh-gen-doc/ MEMORY.md 2>/dev/null || true
 
 if git diff --cached --quiet 2>/dev/null; then
     echo "[refresh_docs] 文档无变化，无需提交。"
@@ -71,6 +71,6 @@ fi
 
 git commit -m "docs: 手动全量刷新系统设计文档 [bot]
 
-基于所有 stories 重新生成/更新。"
+基于所有 oh-story 重新生成/更新。"
 
 echo "[refresh_docs] 完成。目标仓库: $TARGET_REPO"

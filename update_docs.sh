@@ -17,8 +17,8 @@ TARGET_REPO="${1:-$DEFAULT_TARGET}"
 # 转换为绝对路径
 TARGET_REPO="$(cd "$TARGET_REPO" && pwd)"
 
-if [ ! -d "$TARGET_REPO/stories" ]; then
-    echo "[update_docs] 错误: $TARGET_REPO 不是有效的文档仓库（缺少 stories 目录）"
+if [ ! -d "$TARGET_REPO/oh-story" ]; then
+    echo "[update_docs] 错误: $TARGET_REPO 不是有效的文档仓库（缺少 oh-story 目录）"
     exit 1
 fi
 
@@ -28,13 +28,13 @@ export PYTHONIOENCODING="utf-8"
 export PYTHONUTF8=1
 
 # ---------------------------------------------------------------------------
-# 1. 检测目标仓库中 stories/ 的变更
+# 1. 检测目标仓库中 oh-story/ 的变更
 # ---------------------------------------------------------------------------
 cd "$TARGET_REPO"
-CHANGED_STORIES=$(git diff --name-only HEAD~1 HEAD 2>/dev/null | grep "^stories/.*\.md$" || true)
+CHANGED_STORIES=$(git diff --name-only HEAD~1 HEAD 2>/dev/null | grep "^oh-story/.*\.md$" || true)
 
 if [ -z "$CHANGED_STORIES" ]; then
-    echo "[update_docs] stories/ 目录无变更，跳过文档更新。"
+    echo "[update_docs] oh-story/ 目录无变更，跳过文档更新。"
     exit 0
 fi
 
@@ -45,7 +45,7 @@ echo "$CHANGED_STORIES"
 # ---------------------------------------------------------------------------
 # 2. 收集全量 story 文件列表和 diff 信息
 # ---------------------------------------------------------------------------
-ALL_STORIES=$(find stories -name "*.md" -type f 2>/dev/null | sort | tr '\n' ' ')
+ALL_STORIES=$(find oh-story -name "*.md" -type f 2>/dev/null | sort | tr '\n' ' ')
 
 # 获取变更文件的 diff 信息
 DIFF_INFO=""
@@ -75,7 +75,7 @@ git config user.name  "doc-bot"
 git config user.email "doc-bot@update-docs.local"
 
 # 支持新版提示词可能生成的多个 yaml 文件
-git add docs/ MEMORY.md 2>/dev/null || true
+git add oh-gen-doc/ MEMORY.md 2>/dev/null || true
 
 if git diff --cached --quiet 2>/dev/null; then
     echo "[update_docs] 文档无变化，无需提交。"
@@ -84,6 +84,6 @@ fi
 
 git commit -m "docs: 自动更新系统设计文档 [bot]
 
-根据 stories 变更自动生成，变更文件：$(echo "$CHANGED_STORIES" | tr '\n' ' ')"
+根据 oh-story 变更自动生成，变更文件：$(echo "$CHANGED_STORIES" | tr '\n' ' ')"
 
 echo "[update_docs] 完成。目标仓库: $TARGET_REPO"
