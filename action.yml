@@ -26,6 +26,18 @@ runs:
         PYTHONIOENCODING: "utf-8"
         PYTHONUTF8: "1"
       run: |
+        echo "🔄 强制同步工作区到最新状态..."
+        cd ${{ github.workspace }}
+        git config user.name "github-actions[bot]"
+        git config user.email "github-actions[bot]@users.noreply.github.com"
+        # 提取当前分支名
+        BRANCH_NAME=${GITHUB_REF#refs/heads/}
+        if [ -n "$BRANCH_NAME" ] && [ "$BRANCH_NAME" != "$GITHUB_REF" ]; then
+          git fetch origin $BRANCH_NAME
+          git checkout $BRANCH_NAME
+          git pull --rebase origin $BRANCH_NAME || true
+        fi
+        
         echo "🚀 初始化 OpenHarness 引擎..."
         git clone https://github.com/HKUDS/OpenHarness.git /tmp/harness/OpenHarness
         
