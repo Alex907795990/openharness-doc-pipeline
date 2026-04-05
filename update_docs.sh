@@ -7,7 +7,17 @@ set -e
 # ---------------------------------------------------------------------------
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-OH_CMD="$SCRIPT_DIR/OpenHarness/.venv/Scripts/oh.exe"
+
+# 兼容 Linux/macOS (.venv/bin/oh) 和 Windows (.venv/Scripts/oh.exe)
+if [ -f "$SCRIPT_DIR/OpenHarness/.venv/bin/oh" ]; then
+    OH_CMD="$SCRIPT_DIR/OpenHarness/.venv/bin/oh"
+elif [ -f "$SCRIPT_DIR/OpenHarness/.venv/Scripts/oh.exe" ]; then
+    OH_CMD="$SCRIPT_DIR/OpenHarness/.venv/Scripts/oh.exe"
+else
+    echo "[update_docs] 错误: 找不到 OpenHarness 可执行文件 (oh/oh.exe)"
+    exit 1
+fi
+
 PROMPT_FILE="$SCRIPT_DIR/pipeline/prompts/update_system_design.md"
 
 # 默认目标仓库
